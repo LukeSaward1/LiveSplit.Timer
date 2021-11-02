@@ -5,9 +5,9 @@ namespace LiveSplit.UI.Components
 {
     public class TimerFactory : IComponentFactory
     {
-        public string ComponentName => "Timer";
+        public string ComponentName => "TimerRevamped";
 
-        public string Description => "Displays the current run time.";
+        public string Description => "Displays the current run time, and provides many customization options.";
 
         public ComponentCategory Category => ComponentCategory.Timer;
 
@@ -15,9 +15,9 @@ namespace LiveSplit.UI.Components
 
         public string UpdateName => ComponentName;
 
-        public string XMLURL => "http://livesplit.org/update/Components/update.LiveSplit.Timer.xml";
+        public string XMLURL => "";
 
-        public string UpdateURL => "http://livesplit.org/update/";
+        public string UpdateURL => "";
 
         public Version Version => Version.Parse("1.8.0");
     }

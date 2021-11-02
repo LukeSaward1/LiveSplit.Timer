@@ -36,6 +36,16 @@ namespace LiveSplit.UI.Components
         }
         public string DigitsFormat { get; set; }
         public string Accuracy { get; set; }
+        public string HrsFMT { get; set; }
+        public string MinsFMT { get; set; }
+        public string SecsFMT { get; set; }
+        public string DecimalsFMT { get; set; }
+        public string SeparatorFMT { get; set; }
+        public int cb1Index;
+        public int cb2Index;
+        public int cb3Index;
+        public int cb4Index;
+        public int cb5Index;
 
         public LayoutMode Mode { get; set; }
 
@@ -84,18 +94,6 @@ namespace LiveSplit.UI.Components
             chkCenterTimer.DataBindings.Add("Checked", this, "CenterTimer", false, DataSourceUpdateMode.OnPropertyChanged);
             cmbTimingMethod.DataBindings.Add("SelectedItem", this, "TimingMethod", false, DataSourceUpdateMode.OnPropertyChanged);
             trkDecimalsSize.DataBindings.Add("Value", this, "DecimalsSize", false, DataSourceUpdateMode.OnPropertyChanged);
-            cmbDigitsFormat.DataBindings.Add("SelectedItem", this, "DigitsFormat", false, DataSourceUpdateMode.OnPropertyChanged);
-            cmbAccuracy.DataBindings.Add("SelectedItem", this, "Accuracy", false, DataSourceUpdateMode.OnPropertyChanged);
-        }
-
-        void cmbTimerFormat_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DigitsFormat = cmbDigitsFormat.SelectedItem.ToString();
-        }
-
-        private void cmbAccuracy_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Accuracy = cmbAccuracy.SelectedItem.ToString();
         }
 
         void cmbTimingMethod_SelectedIndexChanged(object sender, EventArgs e)
@@ -232,12 +230,52 @@ namespace LiveSplit.UI.Components
             SettingsHelper.CreateSetting(document, parent, "BackgroundGradient", BackgroundGradient) ^
             SettingsHelper.CreateSetting(document, parent, "CenterTimer", CenterTimer) ^
             SettingsHelper.CreateSetting(document, parent, "TimingMethod", TimingMethod) ^
-            SettingsHelper.CreateSetting(document, parent, "DecimalsSize", DecimalsSize);
+            SettingsHelper.CreateSetting(document, parent, "DecimalsSize", DecimalsSize) ^
+            SettingsHelper.CreateSetting(document, parent, "HoursFormat", HrsFMT) ^
+            SettingsHelper.CreateSetting(document, parent, "MinsFormat", MinsFMT) ^
+            SettingsHelper.CreateSetting(document, parent, "SecsFormat", SecsFMT) ^
+            SettingsHelper.CreateSetting(document, parent, "DecFormat", DecimalsFMT) ^
+            SettingsHelper.CreateSetting(document, parent, "SepFormat", SeparatorFMT);
         }
 
         private void ColorButtonClick(object sender, EventArgs e)
         {
             SettingsHelper.ColorButtonClick((Button)sender, this);
+        }
+
+        private void trkDecimalsSize_Scroll(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cbHoursFmt_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            HrsFMT = cbHoursFmt.SelectedItem.ToString();
+            cb1Index = cbHoursFmt.SelectedIndex;
+        }
+
+        private void cbMinsFmt_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MinsFMT = cbMinsFmt.SelectedItem.ToString();
+            cb2Index = cbMinsFmt.SelectedIndex;
+        }
+
+        private void cbSecsFmt_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SecsFMT = cbSecsFmt.SelectedItem.ToString();
+            cb3Index = cbSecsFmt.SelectedIndex;
+        }
+
+        private void cbDecFmt_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DecimalsFMT = cbDecFmt.SelectedItem.ToString();
+            cb4Index = cbDecFmt.SelectedIndex;
+        }
+
+        private void cbSeparatorFmt_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SeparatorFMT = cbSeparatorFmt.SelectedItem.ToString();
+            cb5Index = cbSeparatorFmt.SelectedIndex;
         }
     }
 }

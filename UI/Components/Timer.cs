@@ -46,6 +46,22 @@ namespace LiveSplit.UI.Components
         public float PaddingBottom => 0f;
         public float PaddingRight => 7f;
 
+        public string hrsString;
+        public string minsString;
+        public string secsString;
+        public string decimalsString;
+        public string separator1String;
+        public string separator2String;
+        public string separator3String;
+
+        public int hrsInt;
+        public int minsInt;
+        public int secsInt;
+        public int decimalsInt;
+        public int separatorInt;
+
+        public int fixedDecimalsInt;
+
         public IDictionary<string, Action> ContextMenuControls => null;
 
         public Timer()
@@ -78,6 +94,22 @@ namespace LiveSplit.UI.Components
             UpdateTimeFormat();
             Cache = new GraphicsCache();
             TimerColor = Color.Transparent;
+
+            Settings.HrsFMT = "0";
+            Settings.MinsFMT = "00";
+            Settings.SecsFMT = "00";
+            Settings.DecimalsFMT = "000";
+            Settings.SeparatorFMT = ": . (0:00.000)";
+            hrsInt = 1;
+            Settings.cbHoursFmt.SelectedIndex = 1;
+            minsInt = 2;
+            Settings.cbMinsFmt.SelectedIndex = 2;
+            secsInt = 1;
+            Settings.cbSecsFmt.SelectedIndex = 1;
+            decimalsInt = 3;
+            Settings.cbDecFmt.SelectedIndex = 3;
+            separatorInt = 1;
+            Settings.cbSeparatorFmt.SelectedIndex = 1;
         }
 
         public static void DrawBackground(Graphics g, Color timerColor, Color settingsColor1, Color settingsColor2, 
@@ -214,31 +246,16 @@ namespace LiveSplit.UI.Components
             SmallTextLabel.Draw(g);
         }
 
-        protected void UpdateTimeFormat()
-        {
-            if (Settings.DigitsFormat == "1")
-                CurrentTimeFormat = TimeFormat.Seconds;
-            else if (Settings.DigitsFormat == "00:01")
-                CurrentTimeFormat = TimeFormat.Minutes;
-            else if (Settings.DigitsFormat == "0:00:01")
-                CurrentTimeFormat = TimeFormat.Hours;
-            else
-                CurrentTimeFormat = TimeFormat.TenHours;
-
-            if (Settings.Accuracy == ".23")
-                CurrentAccuracy = TimeAccuracy.Hundredths;
-            else if (Settings.Accuracy == ".2")
-                CurrentAccuracy = TimeAccuracy.Tenths;
-            else
-                CurrentAccuracy = TimeAccuracy.Seconds;
-        }
-
         public virtual TimeSpan? GetTime(LiveSplitState state, TimingMethod method)
         {
             if (state.CurrentPhase == TimerPhase.NotRunning)
                 return state.Run.Offset;
             else
                 return state.CurrentTime[method];
+        }
+
+        protected void UpdateTimeFormat()
+        {
         }
 
         public void DrawVertical(Graphics g, LiveSplitState state, float width, Region clipRegion)
@@ -270,6 +287,91 @@ namespace LiveSplit.UI.Components
         public void Update(IInvalidator invalidator, LiveSplitState state, float width, float height, LayoutMode mode)
         {
             Cache.Restart();
+            UpdateTimeFormat();
+
+            if (Settings.HrsFMT == "")
+                hrsInt = 0;
+            if (Settings.HrsFMT == "0")
+                hrsInt = 1;
+            if (Settings.HrsFMT == "00")
+                hrsInt = 2;
+            if (Settings.HrsFMT == "000")
+                hrsInt = 3;
+            if (Settings.MinsFMT == "")
+                minsInt = 0;
+            if (Settings.MinsFMT == "0")
+                minsInt = 1;
+            if (Settings.MinsFMT == "00")
+                minsInt = 2;
+            if (Settings.SecsFMT == "0")
+                secsInt = 0;
+            if (Settings.SecsFMT == "00")
+                secsInt = 1;
+            if (Settings.DecimalsFMT == "")
+                decimalsInt = 0;
+            if (Settings.DecimalsFMT == "0")
+                decimalsInt = 1;
+            if (Settings.DecimalsFMT == "00")
+                decimalsInt = 2;
+            if (Settings.DecimalsFMT == "000")
+                decimalsInt = 3;
+            if (Settings.cb5Index == 0)
+                separatorInt = 0;
+            if (Settings.cb5Index == 1)
+                separatorInt = 1;
+
+            if (separatorInt == 0 && hrsString != "")
+            {
+                separator1String = "'";
+                separator2String = "'";
+                separator3String = '"'.ToString();
+            }
+            if (separatorInt == 0 && hrsString == "")
+            {
+                separator1String = "";
+                if (minsString == "")
+                {
+                    separator2String = "";
+                }
+                else
+                {
+                    separator2String = "'";
+                }
+                if (secsString == "")
+                {
+                    separator3String = "";
+                }
+                else
+                {
+                    separator3String = '"'.ToString();
+                }
+            }
+            if (separatorInt == 1 && hrsString != "")
+            {
+                separator1String = ":";
+                separator2String = ":";
+                separator3String = ".";
+            }
+            if (separatorInt == 1 && hrsString == "")
+            {
+                separator1String = "";
+                if (minsString == "")
+                {
+                    separator2String = "";
+                }
+                else
+                {
+                    separator2String = ":";
+                }
+                if (secsString == "")
+                {
+                    separator3String = "";
+                }
+                else
+                {
+                    separator3String = ".";
+                }
+            }
 
             var timingMethod = state.CurrentTimingMethod;
             if (Settings.TimingMethod == "Real Time")
@@ -285,14 +387,75 @@ namespace LiveSplit.UI.Components
             if (timeValue != null)
             {
                 var timeString = Formatter.Format(timeValue, CurrentTimeFormat);
-                int dotIndex = timeString.IndexOf(".");
-                BigTextLabel.Text = timeString.Substring(0, dotIndex);
-                if (CurrentAccuracy == TimeAccuracy.Hundredths)
-                    SmallTextLabel.Text = timeString.Substring(dotIndex);
-                else if (CurrentAccuracy == TimeAccuracy.Tenths)
-                    SmallTextLabel.Text = timeString.Substring(dotIndex, 2);
-                else
-                    SmallTextLabel.Text = "";
+                if (hrsInt == 0)
+                {
+                    hrsString = "";
+                }
+                if (hrsInt == 1)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("0");
+                }
+                if (hrsInt == 2)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("00");
+                }
+                if (hrsInt == 3)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("000");
+                }
+                if (minsInt == 0)
+                {
+                    minsString = "";
+                }
+                if (minsInt == 1)
+                {
+                    minsString = timeValue.Value.Minutes.ToString("0");
+                }
+                if (minsInt == 2)
+                {
+                    minsString = timeValue.Value.Minutes.ToString("00");
+                }
+                if (secsInt == 0)
+                {
+                    secsString = "";
+                }
+                if (secsInt == 0)
+                {
+                    secsString = timeValue.Value.Seconds.ToString("0");
+                }
+                if (secsInt == 1)
+                {
+                    secsString = timeValue.Value.Seconds.ToString("00");
+                }
+                if (decimalsInt == 0)
+                {
+                    decimalsString = "";
+                }
+                if (decimalsInt == 1)
+                {
+                    decimalsString = (timeValue.Value.Milliseconds / 100).ToString("0");
+                }
+                if (decimalsInt == 2)
+                {
+                    decimalsString = (timeValue.Value.Milliseconds / 10).ToString("00");
+                }
+                if (decimalsInt == 3)
+                {
+                    decimalsString = timeValue.Value.Milliseconds.ToString("000");
+                }
+                BigTextLabel.Text = string.Concat(new object[]
+                {
+                    hrsString,
+                    separator1String,
+                    minsString,
+                    separator2String,
+                    secsString
+                });
+                SmallTextLabel.Text = string.Concat(new object[]
+                {
+                    separator3String,
+                    decimalsString
+                });
             }
             else
             {
