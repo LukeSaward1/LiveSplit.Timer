@@ -31,7 +31,7 @@ namespace LiveSplit.UI.Components
         public TimerSettings Settings { get; set; }
         public float ActualWidth { get; set; }
 
-        public string ComponentName => "Timer";
+        public string ComponentName => "TimerRevamped";
 
         public float VerticalHeight => Settings.TimerHeight;
 
@@ -337,7 +337,7 @@ namespace LiveSplit.UI.Components
                 {
                     separator2String = "'";
                 }
-                if (secsString == "")
+                if (decimalsString == "")
                 {
                     separator3String = "";
                 }
@@ -443,6 +443,59 @@ namespace LiveSplit.UI.Components
                 {
                     decimalsString = timeValue.Value.Milliseconds.ToString("000");
                 }
+                if(minsInt == 0 && timeValue.Value.Minutes > 0 && timeValue.Value.Minutes < 9)
+                {
+                    minsString = timeValue.Value.Minutes.ToString("0");
+                }
+                if (minsInt == 0 && timeValue.Value.Minutes > 9 && timeValue.Value.Minutes < 60)
+                {
+                    minsString = timeValue.Value.Minutes.ToString("00");
+                }
+
+                if (hrsInt == 0 && timeValue.Value.TotalHours > 0 && timeValue.Value.TotalHours < 10)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("0");
+                }
+                if (hrsInt == 0 && timeValue.Value.TotalHours > 9 && timeValue.Value.TotalHours < 100)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("00");
+                }
+                if (hrsInt == 0 && timeValue.Value.TotalHours > 99 && timeValue.Value.TotalHours < 1000)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("000");
+                }
+                if (hrsInt == 0 && timeValue.Value.TotalHours > 999 && timeValue.Value.TotalHours < 10000)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("0000");
+                }
+
+                if (hrsInt == 1 && timeValue.Value.TotalHours > 9 && timeValue.Value.TotalHours < 100)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("00");
+                }
+                if (hrsInt == 1 && timeValue.Value.TotalHours > 99 && timeValue.Value.TotalHours < 1000)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("000");
+                }
+                if (hrsInt == 1 && timeValue.Value.TotalHours > 999 && timeValue.Value.TotalHours < 10000)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("0000");
+                }
+
+                if (hrsInt == 2 && timeValue.Value.TotalHours > 99 && timeValue.Value.TotalHours < 1000)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("000");
+                }
+                if (hrsInt == 2 && timeValue.Value.TotalHours > 999 && timeValue.Value.TotalHours < 10000)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("0000");
+                }
+                if (hrsInt == 3 && timeValue.Value.TotalHours > 999 && timeValue.Value.TotalHours < 10000)
+                {
+                    hrsString = timeValue.Value.TotalHours.ToString("0000");
+                }
+
+
                 BigTextLabel.Text = string.Concat(new object[]
                 {
                     hrsString,
